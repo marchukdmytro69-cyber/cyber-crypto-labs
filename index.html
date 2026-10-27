@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AEGIS // CRYPTO-OPS — Інтерактивний Кіберполігон Криптографічних Лабораторних</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <!-- Background Cyber Grid & Ambient Glows -->
+  <div class="cyber-bg-grid"></div>
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
+  <!-- TOP TACTICAL HUD HEADER -->
+  <header class="tactical-header">
+    <div class="brand-block">
+      <div class="brand-emblem">
+        <span class="emblem-pulse"></span>
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <path d="M9 12l2 2 4-4"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-tag">CYBERSECURITY TACTICAL WORKSTATION // v4.5</div>
+        <h1 class="brand-title">AEGIS <span class="cyan-text">CRYPTO-OPS</span> LABS</h1>
+      </div>
+    </div>
+
+    <!-- Global Student / Operative Profile Configurator -->
+    <div class="operative-bar">
+      <div class="op-field">
+        <label for="globalVariantSelect">СТУДЕНТ / ВАРІАНТ:</label>
+        <select id="globalVariantSelect" class="cyber-select"></select>
+      </div>
+      <div class="op-field">
+        <label for="globalLastName">ПРІЗВИЩЕ (LOGIN):</label>
+        <input type="text" id="globalLastName" class="cyber-input-sm" value="Марчук" />
+      </div>
+      <div class="op-field">
+        <label for="globalFirstName">ІМ'Я (PASS):</label>
+        <input type="text" id="globalFirstName" class="cyber-input-sm" value="Дмитро" />
+      </div>
+      <div class="op-field">
+        <label for="globalGroupId">№ У СПИСКУ:</label>
+        <input type="number" id="globalGroupId" class="cyber-input-sm num-sm" value="12" min="1" max="25" />
+      </div>
+      <button id="openReportModalBtn" class="cyber-btn btn-accent">
+        <span>ЗВІТ ТА PYTHON КОД</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN NAVIGATION TABS (LABS 1, 2, 3, 4) -->
+  <nav class="lab-nav-bar">
+    <button class="lab-tab active" data-lab="lab1">
+      <span class="lab-num">ЛАБ 01</span>
+      <span class="lab-name">Шифр Цезаря • Частотний аналіз • Перестановка</span>
+    </button>
+    <button class="lab-tab" data-lab="lab2">
+      <span class="lab-num">ЛАБ 02</span>
+      <span class="lab-name">Автентифікація • SHA-256 • JSON Web Tokens (JWT)</span>
+    </button>
+    <button class="lab-tab" data-lab="lab3">
+      <span class="lab-num">ЛАБ 03</span>
+      <span class="lab-name">Блочний шифр S-DES (Бітова Траса • 25 Варіантів)</span>
+    </button>
+    <button class="lab-tab" data-lab="lab4">
+      <span class="lab-num">ЛАБ 04</span>
+      <span class="lab-name">Протокол Діффі-Хеллмана • Атака MITM • Месенджер</span>
+    </button>
+  </nav>
+
+  <!-- WORKSPACE CONTAINER -->
+  <main class="workspace-container">
+
+    <!-- =================================================================== -->
+    <!-- LAB 1: CAESAR CIPHER, FREQUENCY ANALYSIS & TRANSPOSITION CIPHER     -->
+    <!-- =================================================================== -->
+    <section id="lab1" class="lab-section active">
+      <div class="section-subnav">
+        <button class="sub-pill active" data-subtab="lab1-caesar">1.1. Шифр Цезаря (Покрокове Колесо та Стрічка)</button>
+        <button class="sub-pill" data-subtab="lab1-freq">1.2. Частотний Криптоаналіз (Авто-Злам)</button>
+        <button class="sub-pill" data-subtab="lab1-trans">1.3. Шифр Стовпцевої Перестановки (Матриця)</button>
+        <button class="sub-pill" data-subtab="lab1-qa">1.4. Код Python та Контрольні запитання</button>
+      </div>
+
+      <!-- SUBTAB 1.1: CAESAR CIPHER -->
+      <div id="lab1-caesar" class="subtab-panel active">
+        <div class="panel-grid-2">
+          <div class="cyber-card">
+            <div class="card-header">
+              <span class="card-badge">МОДУЛЬ 01 // МОНОАЛФАВІТНА ЗАМІНА</span>
+              <h2>Шифр Цезаря — Панель Керування</h2>
+            </div>
+
+            <div class="preset-bar">
+              <span class="preset-label">Пресети з методички:</span>
+              <button class="preset-chip" id="presetCaesarEn">ENG: "HONEY, I AM HOME" (K=3)</button>
+              <button class="preset-chip" id="presetCaesarUaEnc">УКР: "Шукаємо щастя..." (K=10)</button>
+              <button class="preset-chip" id="presetCaesarUaDec">УКР Криптограма (Дешифрування K=10)</button>
+            </div>
+
+            <div class="form-row-3">
+              <div class="form-group">
+                <label>Режим операції</label>
+                <div class="toggle-group" id="caesarModeToggle">
+                  <button class="toggle-btn active" data-mode="encrypt">Шифрування (+K)</button>
+                  <button class="toggle-btn" data-mode="decrypt">Дешифрування (-K)</button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Алфавіт (Табл. 1.1 / 1.2)</label>
+                <select id="caesarLangSelect" class="cyber-select">
+                  <option value="auto">Автовизначення (УКР 33 / ENG 26)</option>
+                  <option value="ua">Український (33 літери, 0..32)</option>
+                  <option value="en">Англійський (26 літер, 0..25)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Ключ зсуву K: <span id="caesarKeyBadge" class="cyan-text">3</span></label>
+                <div class="range-with-num">
+                  <input type="range" id="caesarKeyRange" min="1" max="32" value="3" />
+                  <input type="number" id="caesarKeyInput" class="cyber-input-sm num-sm" value="3" min="0" max="32" />
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Вхідне повідомлення (Plaintext / Ciphertext)</label>
+              <textarea id="caesarInputText" class="cyber-textarea" rows="2">HONEY, I AM HOME</textarea>
+            </div>
+
+            <div class="result-box">
+              <div class="result-header">
+                <span>РЕЗУЛЬТАТ ПЕРЕТВОРЕННЯ:</span>
+                <button class="copy-mini-btn" data-copy-target="caesarOutputText">Копіювати</button>
+              </div>
+              <div id="caesarOutputText" class="result-mono">KRQHB, L DP KRPH</div>
+            </div>
+
+            <!-- Step-by-Step Debugger Controls -->
+            <div class="step-player-bar">
+              <div class="player-info">
+                <span class="step-counter" id="caesarStepCounter">Крок 1 / 16</span>
+                <span class="step-formula" id="caesarStepFormula">Натисніть «Крок вперед» або «Авто» для трасування</span>
+              </div>
+              <div class="player-controls">
+                <button class="player-btn" id="caesarFirstBtn" title="На початок">[На початок]</button>
+                <button class="player-btn" id="caesarPrevBtn" title="Попередній символ">[Назад]</button>
+                <button class="player-btn play-main" id="caesarPlayBtn" title="Авто-відтворення">[Авто]</button>
+                <button class="player-btn" id="caesarNextBtn" title="Наступний символ">[Вперед]</button>
+              </div>
+            </div>
+
+            <div class="char-stream-box" id="caesarCharStream"></div>
+          </div>
+
+          <!-- Caesar Wheel SVG Visualization -->
+          <div class="cyber-card center-vis-card">
+            <div class="card-header">
+              <span class="card-badge">ВІЗУАЛІЗАТОР // КРИПТОГРАФІЧНИЙ ДИСК</span>
+              <h2>Подвійне Кільце Зсуву Алфавіту</h2>
+            </div>
+            <div id="caesarWheelContainer" class="wheel-holder"></div>
+            <div class="wheel-legend">
+              <span><i class="dot-cyan"></i> Зовнішнє кільце: Вхідний алфавіт (M)</span>
+              <span><i class="dot-green"></i> Внутрішнє кільце: Зсунутий алфавіт (C)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="cyber-card mt-16">
+          <div class="card-header">
+            <span class="card-badge">ТАБЛИЦЯ 1.1 / 1.2 // ІНДЕКСАЦІЯ ТА ВІДПОВІДНІСТЬ ПОЗИЦІЙ</span>
+            <h2>Стрічка Зсуву Алфавіту на K позицій</h2>
+          </div>
+          <div id="caesarRibbonContainer" class="ribbon-scroll"></div>
+        </div>
+      </div>
+
+      <!-- SUBTAB 1.2: FREQUENCY CRYPTANALYSIS -->
+      <div id="lab1-freq" class="subtab-panel">
+        <div class="cyber-card">
+          <div class="card-header-flex">
+            <div>
+              <span class="card-badge">МОДУЛЬ 02 // СТАТИСТИЧНИЙ КРИПТОАНАЛІЗ (ТАБЛ. 1.3 ТА 1.4)</span>
+              <h2>Спектрометр Частотного Аналізу та Автоматичний Злам Ключа</h2>
+            </div>
+            <div class="preset-bar">
+              <button class="preset-chip" id="presetFreqManual">Завантажити шифротекст з методички («ДАФИНЦШЕИЮЯ...»)</button>
+              <button class="preset-chip" id="presetFreqEnSample">Англійський шифротекст (K=7)</button>
+            </div>
+          </div>
+
+          <div class="form-group mt-10">
+            <label>Зашифрований текст для аналізу (Вставте будь-яку криптограму):</label>
+            <textarea id="freqInputText" class="cyber-textarea" rows="3">ДАФИНЦШЕИЮЯЗЩШФЬИТЧИВЮЯШХСЯЯЗВИЇШЧШЮФЬСПЄСПИЇОЛРПЧИЦРЗФЬРІИЇЇШЛСЯИФСЦРЇЧЄШЦАСЇШЧШІСХЗЧИЮДАФИНЧИЮЮИЦРВЧМЦИУШЙШЧСЛМЇСЛЯШЙШЕШЇШЧШЮФЬСПЄ</textarea>
+          </div>
+
+          <div class="deduction-banner" id="freqDeductionBanner"></div>
+          <div id="freqChartContainer" class="freq-chart-box"></div>
+
+          <div class="mt-16">
+            <h3 class="sub-heading">Таблиця 1.4 — Підрахунок кількості появи кожної літери у шифротексті:</h3>
+            <div id="freqTable14Container" class="ribbon-scroll"></div>
+          </div>
+
+          <div class="panel-grid-2 mt-16">
+            <div class="cyber-card inner-subcard">
+              <h3 class="sub-heading">Рейтинг імовірних ключів K (Статистична кореляція):</h3>
+              <div id="freqCandidatesList" class="candidates-list"></div>
+            </div>
+            <div class="cyber-card inner-subcard">
+              <h3 class="sub-heading">Відновлений відкритий текст:</h3>
+              <div id="freqDecryptedOutput" class="result-mono large-result"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBTAB 1.3: COLUMNAR TRANSPOSITION CIPHER -->
+      <div id="lab1-trans" class="subtab-panel">
+        <div class="panel-grid-2">
+          <div class="cyber-card">
+            <div class="card-header">
+              <span class="card-badge">МОДУЛЬ 03 // МАТРИЧНА СТОВПЦЕВА ПЕРЕСТАНОВКА</span>
+              <h2>Шифр Перестановки за Ключовим Словом</h2>
+            </div>
+
+            <div class="preset-bar">
+              <button class="preset-chip" id="presetTransManual">Приклад з методички: «Прикладна математика» (Ключ: «Шифр»)</button>
+              <button class="preset-chip" id="presetTransDecrypt">Дешифрувати «ра еикнаааидммкплатт» (Ключ: «Шифр»)</button>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Режим</label>
+                <div class="toggle-group" id="transModeToggle">
+                  <button class="toggle-btn active" data-mode="encrypt">Шифрування (Рядки -> Стовпці)</button>
+                  <button class="toggle-btn" data-mode="decrypt">Дешифрування (Стовпці -> Рядки)</button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Ключове слово (визначає порядок стовпців):</label>
+                <input type="text" id="transKeyInput" class="cyber-input" value="Шифр" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Вхідний текст:</label>
+              <input type="text" id="transInputText" class="cyber-input" value="Прикладна математика" />
+            </div>
+
+            <div class="result-box">
+              <div class="result-header">
+                <span>ВИХІДНА КРИПТОГРАМА / РОЗШИФРОВАНИЙ ТЕКСТ:</span>
+                <span class="muted-hint">(символ _ позначає пробіл)</span>
+              </div>
+              <div id="transOutputText" class="result-mono"></div>
+            </div>
+
+            <div class="step-player-bar">
+              <div class="player-info">
+                <span class="step-counter" id="transStepCounter">Усі стовпці</span>
+                <span class="step-formula" id="transStepDesc">Натискайте кроки для підсвічування стовпців у порядку номерів літер ключа</span>
+              </div>
+              <div class="player-controls">
+                <button class="player-btn" id="transPrevBtn">[Назад]</button>
+                <button class="player-btn play-main" id="transPlayBtn">[Покроково]</button>
+                <button class="player-btn" id="transNextBtn">[Вперед]</button>
+                <button class="player-btn" id="transAllBtn">[Усі]</button>
+              </div>
+            </div>
+
+            <div id="transStepsList" class="trace-log-list"></div>
+          </div>
+
+          <div class="cyber-card">
+            <div class="card-header">
+              <span class="card-badge">ВІЗУАЛІЗАЦІЯ МАТРИЦІ // ПОРЯДОК СТОВПЦІВ ЗА АЛФАВІТОМ</span>
+              <h2>Таблиця Перестановки</h2>
+            </div>
+            <div id="transMatrixContainer" class="matrix-holder"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBTAB 1.4: PYTHON CODE & CONTROL QUESTIONS -->
+      <div id="lab1-qa" class="subtab-panel">
+        <div class="panel-grid-2">
+          <div class="cyber-card">
+            <div class="card-header-flex">
+              <h2>Готовий Python-код (Лабораторна №1)</h2>
+              <button class="cyber-btn btn-sm" data-copy-code="lab1">Копіювати код</button>
+            </div>
+            <pre class="code-block" id="codeBlockLab1"></pre>
+          </div>
+          <div class="cyber-card">
+            <h2>Відповіді на контрольні запитання (Лабораторна №1)</h2>
+            <div id="qaListLab1" class="qa-accordion"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- LAB 2: AUTHENTICATION, SHA-256 & JSON WEB TOKENS (JWT)              -->
+    <!-- =================================================================== -->
+    <section id="lab2" class="lab-section">
+      <div class="section-subnav">
+        <button class="sub-pill active" data-subtab="lab2-sim">2.1. База Користувачів (SHA-256) та Симулятор /login + JWT</button>
+        <button class="sub-pill" data-subtab="lab2-jwt-lab">2.2. Візуальний Деконструктор JWT (jwt.io) та Лабораторія Підробки</button>
+        <button class="sub-pill" data-subtab="lab2-oauth">2.3. Схема OAuth 2.0 (Authorization Code Flow)</button>
+        <button class="sub-pill" data-subtab="lab2-qa">2.4. Код Flask-Сервера (Python) та Контрольні запитання</button>
+      </div>
+
+      <!-- SUBTAB 2.1: DB + LOGIN + CYBER-POSTMAN -->
+      <div id="lab2-sim" class="subtab-panel active">
+        <div class="panel-grid-2">
+          <div class="cyber-card">
+            <div class="card-header-flex">
+              <div>
+                <span class="card-badge">ЗАВДАННЯ 3 (в, г, г', д) // БАЗА КОРИСТУВАЧІВ ГРУПИ</span>
+                <h2>Таблиця користувачів групи (SHA-256 без солі)</h2>
+              </div>
+              <div class="toggle-group" id="lab2DbFilterToggle">
+                <button class="toggle-btn active" data-filter="triad">Трійка за завданням (3 особи)</button>
+                <button class="toggle-btn" data-filter="all">Увесь список групи (25 осіб)</button>
+              </div>
+            </div>
+            <p class="card-desc">
+              Згідно з методичкою: за замовчуванням обрано студента <b>№12 (Марчук Дмитро Андрійович)</b>, сусіда вище (№11 Максим Марія Романівна) та сусіда нижче (№13 Новак Давід).
+              <b>Логін</b> — прізвище, <b>Пароль</b> — ім'я (у БД зберігається як <code>SHA-256</code> хеш), <b>ID</b> — номер у списку групи.
+            </p>
+
+            <div class="db-table-wrapper" style="max-height:340px;overflow-y:auto;">
+              <table class="cyber-table" id="lab2UsersTable">
+                <thead>
+                  <tr>
+                    <th>ID (№)</th>
+                    <th>ПІБ студента</th>
+                    <th>Логін (Прізвище)</th>
+                    <th>Відкритий пароль (Ім'я)</th>
+                    <th>SHA-256 Хеш у БД (64 hex символи)</th>
+                    <th>Дія</th>
+                  </tr>
+                </thead>
+                <tbody id="lab2UsersTbody"></tbody>
+              </table>
+            </div>
+
+            <div class="secret-config-banner mt-16">
+              <div>
+                <span class="badge-amber">СЕКРЕТНИЙ КЛЮЧ JWT (Secret):</span>
+                <code id="lab2SecretDisplay" class="secret-code">DmytroMarchuk</code>
+                <span class="muted-hint">(Формат FirstnameLastname незалежно від того, хто входить)</span>
+              </div>
+              <div>
+                <span class="badge-cyan">ЧАС ДІЇ ТОКЕНА (TTL):</span>
+                <code id="lab2TtlDisplay" class="secret-code">12</code>
+                <select id="lab2TtlUnit" class="cyber-select-inline">
+                  <option value="min">хвилин (№ у списку × 60с)</option>
+                  <option value="sec">секунд (рівно № у списку с)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="cyber-card">
+            <div class="card-header">
+              <span class="card-badge">CYBER-POSTMAN // ТЕСТУВАННЯ МАРШРУТІВ СЕРВЕРА</span>
+              <h2>Інтерактивний Клієнт Авторизації</h2>
+            </div>
+
+            <div class="postman-box">
+              <div class="postman-url-bar">
+                <span class="http-method post">POST</span>
+                <span class="http-url">http://localhost:5000/login</span>
+                <button class="cyber-btn btn-sm btn-accent" id="btnSendLogin">Send Request</button>
+              </div>
+              <div class="form-row-2 mt-10">
+                <div class="form-group">
+                  <label>Body JSON -> <code>"login"</code> (Прізвище):</label>
+                  <input type="text" id="postmanLoginInput" class="cyber-input" value="Марчук" />
+                </div>
+                <div class="form-group">
+                  <label>Body JSON -> <code>"password"</code> (Ім'я):</label>
+                  <input type="text" id="postmanPassInput" class="cyber-input" value="Дмитро" />
+                </div>
+              </div>
+
+              <div id="loginHashPipeline" class="hash-pipeline-box"></div>
+            </div>
+
+            <div class="postman-box mt-16">
+              <div class="postman-url-bar">
+                <span class="http-method get">GET</span>
+                <span class="http-url">http://localhost:5000/protected</span>
+                <button class="cyber-btn btn-sm btn-emerald" id="btnSendProtected">Запит із Bearer Token</button>
+              </div>
+              <div class="form-group mt-10">
+                <label>Заголовок <code>Authorization: Bearer &lt;token&gt;</code> (можна змінити символ для перевірки захисту):</label>
+                <textarea id="postmanBearerToken" class="cyber-textarea mono-sm" rows="2"></textarea>
+              </div>
+              <div id="protectedResponseBox" class="server-response-box"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBTAB 2.2: JWT VISUAL INSPECTOR -->
+      <div id="lab2-jwt-lab" class="subtab-panel">
+        <div class="cyber-card">
+          <div class="card-header-flex">
+            <div>
+              <span class="card-badge">ДЕКОНСТРУКТОР ТОКЕНА // АНАЛОГ JWT.IO</span>
+              <h2>Покрокове Формування та Перевірка Підпису JWT (HS256)</h2>
+            </div>
+            <div class="preset-bar">
+              <button class="preset-chip" id="btnTamperJwt">[АТАКА] Симулювати підміну ID у Payload без знання Secret</button>
+              <button class="preset-chip" id="btnRestoreJwt">[ВІДНОВИТИ] Повернути валідний підпис</button>
+            </div>
+          </div>
+
+          <div class="jwt-encoded-showcase" id="jwtColoredString"></div>
+
+          <div class="jwt-three-cols mt-16">
+            <div class="jwt-part-card part-header">
+              <div class="part-badge">1. ЗАГОЛОВОК (HEADER) — ЧЕРВОНА ЧАСТИНА</div>
+              <p class="part-desc">Визначає тип токена та алгоритм хешування підпису:</p>
+              <pre id="jwtHeaderJsonPre" class="part-json"></pre>
+              <div class="b64-arrow">Base64Url Encode</div>
+              <code id="jwtHeaderB64Code" class="part-b64"></code>
+            </div>
+
+            <div class="jwt-part-card part-payload">
+              <div class="part-badge">2. КОРИСНЕ НАВАНТАЖЕННЯ (PAYLOAD) — ФІОЛЕТОВА ЧАСТИНА</div>
+              <p class="part-desc">Містить <code>login</code>, <code>id</code> користувача та час дії <code>exp</code>:</p>
+              <pre id="jwtPayloadJsonPre" class="part-json"></pre>
+              <div class="b64-arrow">Base64Url Encode</div>
+              <code id="jwtPayloadB64Code" class="part-b64"></code>
+            </div>
+
+            <div class="jwt-part-card part-signature">
+              <div class="part-badge">3. ПІДПИС (SIGNATURE) — БЛАКИТНА ЧАСТИНА</div>
+              <p class="part-desc">Обчислюється за допомогою секретного ключа сервера:</p>
+              <pre id="jwtSigFormulaPre" class="part-json"></pre>
+              <div class="b64-arrow">Base64Url Encode</div>
+              <code id="jwtSigB64Code" class="part-b64"></code>
+            </div>
+          </div>
+
+          <div id="jwtVerificationBanner" class="deduction-banner mt-16"></div>
+        </div>
+      </div>
+
+      <!-- SUBTAB 2.3: OAUTH 2.0 AUTHORIZATION CODE FLOW -->
+      <div id="lab2-oauth" class="subtab-panel">
+        <div class="cyber-card">
+          <div class="card-header-flex">
+            <div>
+              <span class="card-badge">ТЕОРЕТИЧНА МОДЕЛЬ // СТОРОННІ СЕРВІСИ (FACEBOOK / GOOGLE / OAUTH 2.0)</span>
+              <h2>Інтерактивна діаграма Authorization Code Flow</h2>
+            </div>
+            <div class="player-controls">
+              <button class="player-btn" id="oauthPrevBtn">[Крок назад]</button>
+              <button class="player-btn play-main" id="oauthNextBtn">[Крок вперед]</button>
+            </div>
+          </div>
+          <div id="oauthFlowContainer" class="oauth-flow-box mt-16"></div>
+        </div>
+      </div>
+
+      <!-- SUBTAB 2.4: PYTHON CODE & CONTROL QUESTIONS -->
+      <div id="lab2-qa" class="subtab-panel">
+        <div class="panel-grid-2">
+          <div class="cyber-card">
+            <div class="card-header-flex">
+              <h2>Готовий Flask + PyJWT Сервер (Лабораторна №2)</h2>
+              <button class="cyber-btn btn-sm" data-copy-code="lab2">Копіювати код</button>
+            </div>
+            <pre class="code-block" id="codeBlockLab2"></pre>
+          </div>
+          <div class="cyber-card">
+            <h2>Відповіді на контрольні запитання (Лабораторна №2)</h2>
+            <div id="qaListLab2" class="qa-accordion"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- LAB 3 (FORMER LAB 5): S-DES BLOCK CIPHER (BIT-LEVEL DEBUGGER)       -->
+    <!-- =================================================================== -->
+    <section id="lab3" class="lab-section">
+      <div class="section-subnav">
+        <button class="sub-pill active" data-subtab="lab3-debugger">3.1. Покроковий Бітовий Візуалізатор S-DES (Варіанти 1–25)</button>
+        <button class="sub-pill" data-subtab="lab3-all-variants">3.2. Зведена Таблиця Розв'язків Усіх 25 Варіантів</button>
+        <button class="sub-pill" data-subtab="lab3-qa">3.3. Код Python та Контрольні запитання</button>
+      </div>
+
+      <!-- SUBTAB 3.1: S-DES INTERACTIVE BIT DEBUGGER -->
+      <div id="lab3-debugger" class="subtab-panel active">
+        <div class="cyber-card">
+          <div class="card-header-flex">
+            <div>
+              <span class="card-badge">ЛАБОРАТОРНА РОБОТА 03 // СИСТЕМА БЛОЧНОГО ШИФРУВАННЯ S-DES</span>
+              <h2>Інтерактивний Трасувальник Алгоритму S-DES</h2>
+            </div>
+            <div class="preset-bar">
+              <button class="preset-chip" id="presetSdesTaskKey">Ключ завдання: 0011011101 (Розшифрування варіанта)</button>
+              <button class="preset-chip" id="presetSdesTheoryKey">Ключ прикладу з теорії: 1010000010 (K1=10100100, K2=01000011)</button>
+            </div>
+          </div>
+
+          <div class="form-row-4 mt-10">
+            <div class="form-group">
+              <label>Вибір варіанта (Стор. 6 методички):</label>
+              <select id="sdesVariantSelect" class="cyber-select"></select>
+            </div>
+            <div class="form-group">
+              <label>Вхідний 8-бітний блок (Криптограма / Текст):</label>
+              <input type="text" id="sdesBlockInput" class="cyber-input mono-input" value="01110011" maxlength="8" />
+            </div>
+            <div class="form-group">
+              <label>10-бітний ключ (Key):</label>
+              <input type="text" id="sdesKeyInput" class="cyber-input mono-input" value="0011011101" maxlength="10" />
+            </div>
+            <div class="form-group">
+              <label>Режим та матриця S1:</label>
+              <div class="sdes-mini-toggles">
+                <select id="sdesModeSelect" class="cyber-select">
+                  <option value="decrypt">Розшифрування (K2 -> K1)</option>
+                  <option value="encrypt">Шифрування (K1 -> K2)</option>
+                </select>
+                <select id="sdesS1Select" class="cyber-select">
+                  <option value="manual">S1 за методичкою [1,1,2,3]</option>
+                  <option value="classic">S1 класична [0,1,2,3]</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="sdes-pipeline-ribbon" id="sdesPipelineRibbon"></div>
+
+          <div class="step-player-bar mt-16">
+            <div class="player-info">
+              <span class="step-counter" id="sdesStepCounter">Етап 1 / 9</span>
+              <span class="step-formula" id="sdesStepFormula"></span>
+            </div>
+            <div class="player-controls">
+              <button class="player-btn" id="sdesFirstBtn">[На початок]</button>
+              <button class="player-btn" id="sdesPrevBtn">[Назад]</button>
+              <button class="player-btn play-main" id="sdesPlayBtn">[Авто-Трасування]</button>
+              <button class="player-btn" id="sdesNextBtn">[Вперед]</button>
+            </div>
+          </div>
+
+          <div class="panel-grid-2 mt-16">
+            <div class="cyber-card inner-subcard">
+              <h3 class="sub-heading" id="sdesWireTitle">Схема Комутації та Перестановки Бітів</h3>
+              <div id="sdesWireContainer" class="wire-holder"></div>
+              <div id="sdesKeyGenDetailBox" class="keygen-detail-box mt-10"></div>
+            </div>
+
+            <div class="cyber-card inner-subcard">
+              <h3 class="sub-heading">Робота Модулів Заміни S0 та S1 (Активний Раунд)</h3>
+              <div class="round-selector-pills">
+                <button class="sub-pill active" id="btnShowRound1Sbox">Раунд 1 (f_K)</button>
+                <button class="sub-pill" id="btnShowRound2Sbox">Раунд 2 (f_K)</button>
+              </div>
+              <div id="sdesSboxContainer" class="mt-10"></div>
+            </div>
+          </div>
+
+          <div class="cyber-card inner-subcard mt-16">
+            <h3 class="sub-heading">Повний покроковий протокол обчислень (для ручної перевірки та звіту):</h3>
+            <div id="sdesFullProtocolContainer" class="protocol-grid"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBTAB 3.2: ALL 25 VARIANTS TABLE -->
+      <div id="lab3-all-variants" class="subtab-panel">
+        <div class="cyber-card">
+          <div class="card-header-flex">
+            <div>
+              <span class="card-badge">ДОВІДНИК УСІХ ВАРІАНТІВ // КЛЮЧ 0011011101</span>
+              <h2>Таблиця проміжних та фінальних результатів для всіх 25 варіантів (Лабораторна №3)</h2>
+            </div>
+            <span class="muted-hint">Клікніть на будь-який рядок, щоб завантажити цей варіант у покроковий візуалізатор</span>
+          </div>
+          <div class="db-table-wrapper mt-10">
+            <table class="cyber-table" id="sdesAllVariantsTable">
+              <thead>
+                <tr>
+                  <th>Варіант</th>
+                  <th>ПІБ студента</th>
+                  <th>Вхідна криптограма</th>
+                  <th>1. Вихід IP</th>
+                  <th>2. Вихід f_K (K2)</th>
+                  <th>3. Вихід SW</th>
+                  <th>4. Вихід f_K (K1)</th>
+                  <th>5. Вихід IP-1 (Біти)</th>
+                  <th>Десяткове число</th>
+                  <th>Дія</th>
+                </tr>
+              </thead>
+              <tbody id="sdesAllVariantsTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBTAB 3.3: PYTHON CODE & CONTROL QUESTIONS -->
+      <div id="lab3-qa" class="subtab-panel">
+        <div class="panel-grid-2">
+          <div class="cyber-card">
+            <div class="card-header-flex">
+              <h2>Готовий Python-код (Лабораторна №3: S-DES)</h2>
+              <button class="cyber-btn btn-sm" data-copy-code="lab3">Копіювати код</button>
+            </div>
+            <pre class="code-block" id="codeBlockLab3"></pre>
+          </div>
+          <div class="cyber-card">
+            <h2>Відповіді на контрольні запитання (Лабораторна №3)</h2>
+            <div id="qaListLab3" class="qa-accordion"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- LAB 4: DIFFIE-HELLMAN PROTOCOL, MITM ATTACK & MULTI-TAB MESSENGER   -->
+    <!-- =================================================================== -->
+    <section id="lab4" class="lab-section">
+      <div class="section-subnav">
+        <button class="sub-pill active" data-subtab="lab4-sim">4.1. Симулятор Протоколу Діффі-Хеллмана та Атаки MITM</button>
+        <button class="sub-pill" data-subtab="lab4-math">4.2. Покрокове Піднесення до Степеня за Модулем (g^a mod p)</button>
+        <button class="sub-pill" data-subtab="lab4-qa">4.3. Код Python та Контрольні запитання</button>
+      </div>
+
+      <!-- MULTI-TAB MESSENGER LAUNCHER BANNER -->
+      <div class="cyber-card mb-16" style="border-color:var(--cyan);">
+        <div class="card-header-flex" style="margin-bottom:0;">
+          <div>
+            <span class="card-badge">БАГАТОВІКОННИЙ МЕРЕЖЕВИЙ СИМУЛЯТОР В РЕАЛЬНОМУ ЧАСІ</span>
+            <h2>Месенджери Аліси, Боба та Консоль Перехоплювача (MITM) для різних вкладок браузера</h2>
+            <p class="card-desc" style="margin-bottom:0;margin-top:4px;">
+              Відкрийте термінали в окремих вкладках або вікнах браузера. Коли Аліса або Боб надсилають зашифроване повідомлення, воно перехоплюється у вкладці Перехоплювача, де ви можете прочитати його, змінити текст і переслати далі під виглядом оригіналу.
+            </p>
+          </div>
+          <div class="player-controls">
+            <a href="messenger.html?role=alice" target="_blank" class="cyber-btn btn-accent">[Відкрити Месенджер Аліси]</a>
+            <a href="messenger.html?role=attacker" target="_blank" class="cyber-btn btn-danger">[Відкрити Консоль Перехоплювача MITM]</a>
+            <a href="messenger.html?role=bob" target="_blank" class="cyber-btn btn-emerald">[Відкрити Месенджер Боба]</a>
+            <button id="btnOpenAllThreeTabs" class="cyber-btn">[Відкрити всі 3 вкладки]</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBTAB 4.1: DH & MITM INTERACTIVE TOPOLOGY -->
+      <div id="lab4-sim" class="subtab-panel active">
+        <div class="cyber-card">
+          <div class="card-header-flex">
+            <div>
+              <span class="card-badge">МЕРЕЖЕВИЙ КРИПТОПРОТОКОЛ // ОБМІН ВІДКРИТИМИ КЛЮЧАМИ</span>
+              <h2>Візуалізація Протоколу Діффі-Хеллмана та Атаки «Людина посередині» (MITM)</h2>
+            </div>
+            <div class="toggle-group" id="dhModeToggle">
+              <button class="toggle-btn active" data-mode="standard">Стандартний DH (2 учасники: Аліса <-> Боб)</button>
+              <button class="toggle-btn btn-danger-mode" data-mode="mitm">Атака MITM (Перехоплення: Аліса <-> Зловмисник <-> Боб)</button>
+            </div>
+          </div>
+
+          <div class="preset-bar mt-10">
+            <span class="preset-label">Пресети параметрів:</span>
+            <button class="preset-chip" id="presetDhManual">Приклад з методички (p=331, g=204, a=46, b=56 -> A=130, B=296, K=58)</button>
+            <button class="preset-chip" id="presetDhClassic">Класичний приклад (p=23, g=5, a=6, b=15)</button>
+            <button class="preset-chip" id="presetDhLarge">Велике просте (p=7919, g=7, a=123, b=456)</button>
+          </div>
+
+          <div class="form-row-6 mt-10">
+            <div class="form-group">
+              <label>Просте число <code>p</code>:</label>
+              <input type="number" id="dhInputP" class="cyber-input" value="331" min="5" />
+            </div>
+            <div class="form-group">
+              <label>Генератор <code>g</code>:</label>
+              <input type="number" id="dhInputG" class="cyber-input" value="204" min="2" />
+            </div>
+            <div class="form-group">
+              <label>Секрет Аліси <code>a</code>:</label>
+              <input type="number" id="dhInputA" class="cyber-input" value="46" min="1" />
+            </div>
+            <div class="form-group">
+              <label>Секрет Боба <code>b</code>:</label>
+              <input type="number" id="dhInputB" class="cyber-input" value="56" min="1" />
+            </div>
+            <div class="form-group mitm-only-field" id="dhFieldC1">
+              <label>Секрет Атакера <code>c1</code>:</label>
+              <input type="number" id="dhInputC1" class="cyber-input" value="33" min="1" />
+            </div>
+            <div class="form-group mitm-only-field" id="dhFieldC2">
+              <label>Секрет Атакера <code>c2</code>:</label>
+              <input type="number" id="dhInputC2" class="cyber-input" value="71" min="1" />
+            </div>
+          </div>
+
+          <div id="dhTopologyContainer" class="topology-canvas-box"></div>
+
+          <div class="step-player-bar">
+            <div class="player-info">
+              <span class="step-counter" id="dhStepCounter">Крок 5 / 5</span>
+              <span class="step-formula" id="dhStepFormula"></span>
+            </div>
+            <div class="player-controls">
+              <button class="player-btn" id="dhFirstBtn">[На початок]</button>
+              <button class="player-btn" id="dhPrevBtn">[Назад]</button>
+              <button class="player-btn play-main" id="dhPlayBtn">[Покрокова Демонстрація]</button>
+              <button class="player-btn" id="dhNextBtn">[Вперед]</button>
+            </div>
+          </div>
+
+          <div id="dhStepsTimeline" class="dh-timeline-grid mt-16"></div>
+        </div>
+      </div>
+
+      <!-- SUBTAB 4.2: MODULAR EXPONENTIATION TRACE -->
+      <div id="lab4-math" class="subtab-panel">
+        <div class="cyber-card">
+          <div class="card-header">
+            <span class="card-badge">МАТЕМАТИЧНЕ ЯДРО // ШВИДКЕ ПІДНЕСЕННЯ ДО СТЕПЕНЯ ЗА МОДУЛЕМ</span>
+            <h2>Детальний розрахунок A = g^a mod p, B = g^b mod p та K = B^a mod p</h2>
+          </div>
+          <div id="dhMathTraceContainer" class="panel-grid-2 mt-10"></div>
+        </div>
+      </div>
+
+      <!-- SUBTAB 4.3: PYTHON CODE & CONTROL QUESTIONS -->
+      <div id="lab4-qa" class="subtab-panel">
+        <div class="panel-grid-2">
+          <div class="cyber-card">
+            <div class="card-header-flex">
+              <h2>Готовий Python-код (Лабораторна №4: DH + MITM)</h2>
+              <button class="cyber-btn btn-sm" data-copy-code="lab4">Копіювати код</button>
+            </div>
+            <pre class="code-block" id="codeBlockLab4"></pre>
+          </div>
+          <div class="cyber-card">
+            <h2>Відповіді на контрольні запитання (Лабораторна №4)</h2>
+            <div id="qaListLab4" class="qa-accordion"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: LAB REPORT & PYTHON CODE GENERATOR -->
+  <div id="reportModal" class="cyber-modal-backdrop hidden">
+    <div class="cyber-modal">
+      <div class="modal-header">
+        <div>
+          <span class="card-badge">АВТОМАТИЧНИЙ ГЕНЕРАТОР ЗВІТІВ</span>
+          <h2>Персоналізований Звіт з Усіх Лабораторних Робіт (Лаб 1, 2, 3, 4)</h2>
+        </div>
+        <div class="modal-actions">
+          <button class="cyber-btn btn-sm btn-accent" id="copyFullReportBtn">Копіювати весь звіт</button>
+          <button class="cyber-btn btn-sm" id="printReportBtn">Друкувати / PDF</button>
+          <button class="cyber-btn btn-sm btn-danger" id="closeReportModalBtn">Закрити</button>
+        </div>
+      </div>
+      <div id="reportModalBody" class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/crypto-engines.js"></script>
+  <script src="js/visualizers.js"></script>
+  <script src="js/lab-content.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AEGIS // SECURE MESSENGER TERMINAL (DH + MITM)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="messenger-body">
+  <div class="cyber-bg-grid"></div>
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
+  <!-- TOP HEADER FOR MESSENGER TERMINAL -->
+  <header class="tactical-header">
+    <div class="brand-block">
+      <div class="brand-emblem" id="nodeHeaderEmblem">
+        <span class="emblem-pulse"></span>
+        <span style="font-family:var(--font-mono);font-weight:800;font-size:13px;" id="nodeShortCode">DH</span>
+      </div>
+      <div>
+        <div class="brand-tag">ЛАБОРАТОРНА РОБОТА 04 // ПРОТОКОЛ ДІФФІ-ХЕЛЛМАНА ТА MITM</div>
+        <h1 class="brand-title" id="nodeHeaderTitle">ТЕРМІНАЛ ЗВ'ЯЗКУ</h1>
+      </div>
+    </div>
+
+    <div class="operative-bar">
+      <span class="preset-label">Перемкнути роль цієї вкладки:</span>
+      <div class="toggle-group" id="roleSwitchGroup">
+        <button class="toggle-btn" data-role="alice">АЛІСА (ALICE)</button>
+        <button class="toggle-btn btn-danger-mode" data-role="attacker">ПЕРЕХОПЛЮВАЧ (MITM)</button>
+        <button class="toggle-btn" data-role="bob">БОБ (BOB)</button>
+      </div>
+      <span class="preset-label" style="margin-left:8px;">Відкрити нову вкладку:</span>
+      <a href="messenger.html?role=alice" target="_blank" class="cyber-btn btn-sm">[+ Вкладка Аліси]</a>
+      <a href="messenger.html?role=attacker" target="_blank" class="cyber-btn btn-sm btn-danger">[+ Вкладка Перехоплювача]</a>
+      <a href="messenger.html?role=bob" target="_blank" class="cyber-btn btn-sm btn-emerald">[+ Вкладка Боба]</a>
+      <a href="index.html" class="cyber-btn btn-sm">[Повернутись до Лабораторних]</a>
+    </div>
+  </header>
+
+  <main class="workspace-container">
+    <!-- CHANNEL STATUS & CRYPTO PARAMETERS BAR -->
+    <div class="cyber-card mb-16">
+      <div class="card-header-flex">
+        <div>
+          <span class="card-badge" id="channelStateBadge">СИНХРОНІЗАЦІЯ МІЖ ВКЛАДКАМИ БРАУЗЕРА АКТИВНА (BROADCAST CHANNEL)</span>
+          <h2 id="channelModeHeading">Стан криптографічного каналу Діффі-Хеллмана</h2>
+        </div>
+        <div class="player-controls">
+          <button class="cyber-btn btn-sm btn-accent" id="btnRunHandshake">Виконати обмін ключами DH</button>
+          <button class="cyber-btn btn-sm btn-danger" id="btnResetChannel">Очистити історію та скинути сесію</button>
+        </div>
+      </div>
+
+      <!-- Public & Node Parameters Strip -->
+      <div class="sdes-pipeline-ribbon" id="msgCryptoParamsStrip"></div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- VIEW FOR ALICE OR BOB (ENDPOINT MESSENGER CLIENT)                   -->
+    <!-- =================================================================== -->
+    <div id="endpointClientView" class="panel-grid-2">
+      <!-- Left: Chat Window & Message Composer -->
+      <div class="cyber-card">
+        <div class="card-header-flex">
+          <div>
+            <span class="card-badge" id="clientNodeBadge">КІНЦЕВИЙ ВУЗОЛ МЕРЕЖІ</span>
+            <h2 id="clientWindowTitle">Захищений Месенджер</h2>
+          </div>
+          <div id="clientKeyStatusPill" class="card-badge"></div>
+        </div>
+
+        <!-- Handshake Control for Endpoint -->
+        <div class="postman-box mb-12">
+          <div class="form-row-3">
+            <div class="form-group">
+              <label>Публічний модуль p:</label>
+              <input type="number" id="clientInputP" class="cyber-input" value="331" />
+            </div>
+            <div class="form-group">
+              <label>Генератор g:</label>
+              <input type="number" id="clientInputG" class="cyber-input" value="204" />
+            </div>
+            <div class="form-group">
+              <label id="clientPrivateKeyLabel">Мій секретний ключ (a/b):</label>
+              <input type="number" id="clientInputPriv" class="cyber-input" value="46" />
+            </div>
+          </div>
+          <div class="card-header-flex" style="margin-bottom:0;">
+            <div style="font-family:var(--font-mono);font-size:12px;" id="clientComputedFormula"></div>
+            <button class="cyber-btn btn-sm btn-accent" id="btnSendPublicKey">Оновити та надіслати мій відкритий ключ у канал</button>
+          </div>
+        </div>
+
+        <!-- Chat Messages Feed -->
+        <div class="chat-feed-box" id="endpointChatFeed"></div>
+
+        <!-- Message Input Form -->
+        <div class="chat-composer mt-10">
+          <div class="form-group">
+            <label id="composerLabel">Введіть повідомлення (буде автоматично зашифровано вашим спільним ключем K):</label>
+            <div class="composer-row">
+              <input type="text" id="endpointMsgInput" class="cyber-input" placeholder="Наприклад: Переказ 5000 грн на рахунок UA-1001" />
+              <button class="cyber-btn btn-accent" id="btnEndpointSendMsg">Зашифрувати та надіслати</button>
+            </div>
+          </div>
+          <div class="preset-bar" style="margin-bottom:0;">
+            <span class="preset-label">Швидкі повідомлення:</span>
+            <button class="preset-chip quick-msg-btn" data-msg="Переказ 500 грн на рахунок 1111">Переказ 500 грн на рахунок 1111</button>
+            <button class="preset-chip quick-msg-btn" data-msg="Пароль доступу до бази: ALPHA-77">Пароль доступу до бази: ALPHA-77</button>
+            <button class="preset-chip quick-msg-btn" data-msg="Підтверджую отримання ключа, канал чистий">Підтверджую отримання ключа</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Step-by-Step Encryption / Decryption Inspector for this Node -->
+      <div class="cyber-card">
+        <div class="card-header">
+          <span class="card-badge">КРИПТОГРАФІЧНИЙ ПРОЦЕСОР ВУЗЛА</span>
+          <h2>Покроковий розбір шифрування та дешифрування пакетів</h2>
+        </div>
+        <div id="endpointCryptoLog" class="crypto-trace-feed"></div>
+      </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- VIEW FOR ATTACKER (MITM INTERCEPTOR & PACKET MODIFIER CONSOLE)      -->
+    <!-- =================================================================== -->
+    <div id="attackerConsoleView" class="hidden">
+      <div class="panel-grid-2">
+        <!-- Left: MITM Attack Controls & Intercepted Queue -->
+        <div class="cyber-card">
+          <div class="card-header-flex">
+            <div>
+              <span class="card-badge" style="color:#fda4af;border-color:#f43f5e;background:rgba(244,63,94,0.15);">ВУЗОЛ АТАКИ // MAN-IN-THE-MIDDLE</span>
+              <h2>Панель Керування Перехопленням та Підміною Ключів</h2>
+            </div>
+          </div>
+
+          <div class="postman-box mb-12">
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Режим роботи вузла в каналі:</label>
+                <div class="toggle-group" id="mitmActiveToggle">
+                  <button class="toggle-btn active btn-danger-mode" data-mitm="active">АКТИВНА АТАКА MITM (Підміна ключів K1 та K2)</button>
+                  <button class="toggle-btn" data-mitm="passive">ПАСИВНЕ ПРОСЛУХОВУВАННЯ (Без підміни ключів)</button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Режим обробки перехоплених повідомлень:</label>
+                <div class="toggle-group" id="mitmHoldToggle">
+                  <button class="toggle-btn active btn-danger-mode" data-hold="manual">РУЧНЕ ПЕРЕХОПЛЕННЯ (Затримувати для зміни тексту)</button>
+                  <button class="toggle-btn" data-hold="auto">АВТО-РЕТРАНСЛЯЦІЯ (Перешифровувати автоматично)</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row-2" style="margin-bottom:0;">
+              <div class="form-group">
+                <label>Секретний ключ перехоплювача c1 (для каналу з Алісою):</label>
+                <input type="number" id="attackerInputC1" class="cyber-input" value="33" />
+              </div>
+              <div class="form-group">
+                <label>Секретний ключ перехоплювача c2 (для каналу з Бобом):</label>
+                <input type="number" id="attackerInputC2" class="cyber-input" value="71" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Intercepted Packets Queue Waiting for Attacker Action -->
+          <div class="card-header-flex mt-16">
+            <h3 class="sub-heading" style="margin-bottom:0;color:#fda4af;">Черга перехоплених пакетів (Очікують на дію перехоплювача):</h3>
+            <span class="card-badge" id="pendingCountBadge">0 пакетів у черзі</span>
+          </div>
+          <div id="attackerInterceptQueue" class="intercept-queue-box"></div>
+        </div>
+
+        <!-- Right: Full Wiretap Log & Key Substitution Matrix -->
+        <div class="cyber-card">
+          <div class="card-header">
+            <span class="card-badge">ЖУРНАЛ ПЕРЕХОПЛЕННЯ ТРАФІКУ</span>
+            <h2>Матриця підміни ключів та історія пакетів у каналі</h2>
+          </div>
+          <div id="attackerKeyMatrixBox" class="secret-config-banner mb-12"></div>
+          <div id="attackerFullLog" class="crypto-trace-feed"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/crypto-engines.js"></script>
+  <script src="js/messenger.js"></script>
+</body>
+</html>
